@@ -1,0 +1,10 @@
+{% autoescape off %}
+
+Hi {{user.first_name}},
+
+{% if is_approved %}
+Congratulations!Youe restaurant has been approved
+{% else %}
+We are sorry!you are not eligible for publishing your food menu on our markplace
+{% endif %}
+{% endautoescape %}

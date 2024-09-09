@@ -1,15 +1,73 @@
 @keyframes show-toast{
-    0% {bottom: -100%;}
-    20% {bottom: 100px;}
-    80% {bottom: 100px;}
-    100% {bottom: -100%;}
+    0% {bottom: -100%}
+    20% {bottom: 100px}
+    80% {bottom: 100px}
+    100% {bottom: -100%}
 }
-
 
 .show-notification{
     position: fixed;
     bottom: 100%;
     right: 20px;
     animation-name: show-toast;
-    animation-duration: 5s;
+    animation-duration: 8s;
+    z-index: 99;
+}
+.btn{
+    padding: 2px 1.75em !important;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+
+.suggestions-list {
+    border: 1px solid #ccc;  /* 边框样式 */
+    max-height: 200px;       /* 最大高度，防止列表过长 */
+    overflow-y: auto;        /* 允许垂直滚动 */
+    background-color: #fff;  /* 背景颜色 */
+    position: absolute;      /* 绝对定位 */
+    width: 100%;             /* 与输入框宽度匹配 */
+    z-index: 1000;           /* 确保建议列表显示在最上层 */
+}
+
+.suggestions-list div {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.suggestions-list div:hover {
+    background-color: #f0f0f0; /* 鼠标悬停时的背景颜色 */
+}
+.main-search.fancy .field-holder input[type="text"]{
+    color: #000000 !important;
+}
+
+table > tbody > tr > td{
+    border: none !important;
+}
+
+#opening_hours select{
+    padding: 5px 10px !important;
+}
+.btn-success.add_hour{
+    padding: 7px 15px 7px 15px;
+}
+
+/* hide radio button */
+.payment-method [type=radio]{
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Image style */
+.payment-method [type=radio] + img{
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Checked style */
+.payment-method [type=radio]:checked + img{
+    outline: 2px solid #ff0000;
 }

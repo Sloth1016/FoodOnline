@@ -18,11 +18,101 @@
 	<link href="{% static 'css/cs-foodbakery-plugin.css' %}" rel="stylesheet">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 	<link href="{% static 'css/bootstrap-slider.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	
 	<!-- JAVASCRIPT -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="{% static 'js/modernizr.js' %}"></script>
 	<script src="{% static 'js/bootstrap.js' %}"></script>
+	
+	
+	<script>
+		// 初始化用户位置
+		function initializeLocation() {
+			var x = document.getElementById("location");
+			var current_location = sessionStorage.getItem("current_location");
+			if (current_location) {
+				x.value = current_location;
+			}
+		}
+	
+		// 获取用户当前位置
+		function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition, showError);
+			} else { 
+				document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+			}
+		}
+	
+		// 处理位置数据
+		function showPosition(position) {
+			var lat = position.coords.latitude;
+			var lng = position.coords.longitude;
+	
+			var url = `/vendor/profile/?action=get_address_suggestions&query=${lat},${lng}`; // 请求地址
+	
+			$.ajax({
+				url: url,
+				type: "GET",
+				dataType: "json", // 确保期望的响应类型
+				success: function(response) {
+					console.log("Response received:", response); // 打印响应以调试
+					if (response && response.status === 'ok' && response.result && response.result.length > 0) {
+						var address = response.result[0].formatted_address;
+						console.log("Address found:", address); // 打印找到的地址
+						document.getElementById("location").value = address;
+						sessionStorage.setItem("current_location", address);
+						window.location = `?lat=${lat}&lng=${lng}`;
+					} else {
+						console.log("No address found in response"); // 详细日志
+						document.getElementById("location").value = "No address found";
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error("Error fetching location data:", status, error);
+				}
+			});
+		}
+	
+		// 处理地理位置错误
+		function showError(error) {
+			switch(error.code) {
+				case error.PERMISSION_DENIED:
+					document.getElementById("location").innerHTML = "User denied the request for Geolocation.";
+					break;
+				case error.POSITION_UNAVAILABLE:
+					document.getElementById("location").innerHTML = "Location information is unavailable.";
+					break;
+				case error.TIMEOUT:
+					document.getElementById("location").innerHTML = "The request to get user location timed out.";
+					break;
+				case error.UNKNOWN_ERROR:
+					document.getElementById("location").innerHTML = "An unknown error occurred.";
+					break;
+			}
+		}
+	
+		// 页面加载时调用
+		window.onload = function() {
+			initializeLocation();
+			getLocation(); // 调用获取位置函数
+		};
+	</script>
+	
+	<script src="{% static 'js/custom.js' %}"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+	<script src="https://www.paypal.com/sdk/js?client-id={{ PAYPAL_CLIENT_ID }}&currency=USD"></script>
+		<!-- Include Datatables plugin script and css -->
+		<link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+		<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+		<script>
+			$(document).ready( function () {
+				$('#myOrdersTable').DataTable();
+			} );
+		</script>
+
 
 	<link rel="stylesheet" href="{% static 'css/custom.css' %}">
 	<style>
@@ -43,5 +133,3 @@
 
     {%  endblock %}
 
-    <!-- LOAD FOOTER HERE -->
-    {% include 'includes/footer.html'%}  
